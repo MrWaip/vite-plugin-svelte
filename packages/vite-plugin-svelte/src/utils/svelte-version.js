@@ -1,4 +1,4 @@
-import { VERSION } from 'svelte/compiler';
+import { VERSION } from './compiler.js';
 
 /**
  * @type {boolean}

@@ -1,13 +1,13 @@
-# @sveltejs/vite-plugin-svelte
+# @mrwaip/vite-plugin-svelte
 
-The official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev).
+A fork of the official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev) that compiles Svelte with the experimental Rust compiler [`@mrwaip/svelte-rs`](https://www.npmjs.com/package/@mrwaip/svelte-rs). The plugin API stays compatible with `@sveltejs/vite-plugin-svelte`.
 
 ## Usage
 
 ```js
 // vite.config.js
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@mrwaip/vite-plugin-svelte';
 
 export default defineConfig({
   plugins: [

@@ -1,15 +1,15 @@
-# @sveltejs/vite-plugin-svelte
+# @mrwaip/vite-plugin-svelte
 
-[![npm version](https://img.shields.io/npm/v/@sveltejs/vite-plugin-svelte)](https://www.npmjs.com/package/@sveltejs/vite-plugin-svelte)
-[![CI](https://github.com/sveltejs/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/sveltejs/vite-plugin-svelte/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte)
+[![CI](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml)
 [![Chat](https://img.shields.io/discord/457912077277855764?label=chat&logo=discord)](https://svelte.dev/chat)
 
-The official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev).
+A fork of the official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev) that routes all Svelte compilation through the experimental Rust compiler [`@mrwaip/svelte-rs`](https://www.npmjs.com/package/@mrwaip/svelte-rs). The plugin API stays compatible with `@sveltejs/vite-plugin-svelte`.
 
 ## Installation
 
 ```bash
-npm install --save-dev @sveltejs/vite-plugin-svelte
+npm install --save-dev @mrwaip/vite-plugin-svelte
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install --save-dev @sveltejs/vite-plugin-svelte
 ```js
 // vite.config.js
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@mrwaip/vite-plugin-svelte';
 
 export default defineConfig({
   plugins: [
@@ -36,9 +36,9 @@ export default defineConfig({
 
 ## Packages
 
-| Package                                                     | Changelog                                             |
-| ----------------------------------------------------------- | ----------------------------------------------------- |
-| [@sveltejs/vite-plugin-svelte](packages/vite-plugin-svelte) | [Changelog](packages/vite-plugin-svelte/CHANGELOG.md) |
+| Package                                                   | Changelog                                             |
+| --------------------------------------------------------- | ----------------------------------------------------- |
+| [@mrwaip/vite-plugin-svelte](packages/vite-plugin-svelte) | [Changelog](packages/vite-plugin-svelte/CHANGELOG.md) |
 
 ## Got a question? / Need help?
 

@@ -1,4 +1,4 @@
-import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { svelte, vitePreprocess } from '@mrwaip/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 import MagicString from 'magic-string';
 import * as vite from 'vite';

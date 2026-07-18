@@ -77,5 +77,65 @@ describe('createCompileSvelte', () => {
 
 			expect(output.lang).toBe('ts');
 		});
+
+		it('ignores internal sourcemap option for rust compiler', async () => {
+			const code = '<script>const answer = 42;</script><div>{answer}</div>';
+			const compileSvelte = createCompileSvelte(options);
+			const output = await compileSvelte(
+				{
+					cssId: 'svelte-xxxxx',
+					query: {},
+					raw: false,
+					ssr: false,
+					timestamp: Date.now(),
+					id: 'id',
+					filename: '/some/File.svelte',
+					normalizedFilename: 'some/File.svelte'
+				},
+				code,
+				{},
+				{
+					version: 3,
+					file: 'File.svelte',
+					names: [],
+					sourceRoot: '',
+					sources: ['File.svelte'],
+					sourcesContent: [code],
+					mappings: ''
+				}
+			);
+
+			expect(output.compiled.js.code).toContain('answer');
+		});
+
+		it('compiles ssr with the rust compiler', async () => {
+			const code = '<script>const answer = 42;</script><div>{answer}</div>';
+			const compileSvelte = createCompileSvelte(options);
+			const output = await compileSvelte(
+				{
+					cssId: 'svelte-xxxxx',
+					query: {},
+					raw: false,
+					ssr: true,
+					timestamp: Date.now(),
+					id: 'id',
+					filename: '/some/File.svelte',
+					normalizedFilename: 'some/File.svelte'
+				},
+				code,
+				{},
+				{
+					version: 3,
+					file: 'File.svelte',
+					names: [],
+					sourceRoot: '',
+					sources: ['File.svelte'],
+					sourcesContent: [code],
+					mappings: ''
+				}
+			);
+
+			expect(output.compiled.js.code).toContain('answer');
+		});
 	});
 });

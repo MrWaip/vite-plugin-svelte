@@ -5,10 +5,13 @@
 import process from 'node:process';
 import * as vite from 'vite';
 import { mapToRelative, removeLangSuffix } from './utils/sourcemaps.js';
+import { measureAsync } from './utils/profile.js';
 const {
 	isCSSRequest,
 	preprocessCSS,
 	resolveConfig,
+	//@ts-ignore not present in every vite version
+	transformWithEsbuild,
 	//@ts-ignore rolldown types don't exist
 	transformWithOxc
 } = vite;
@@ -47,15 +50,28 @@ function viteScript() {
 				return;
 			}
 			const lang = /** @type {'ts'} */ (attributes.lang);
-			const { code, map } = await transformWithOxc(content, filename, {
-				lang,
-				target: 'esnext',
-				// oxc strips value imports it considers unused, but in Svelte files
-				// these imports may be referenced in the template which oxc cannot see.
-				// onlyRemoveTypeImports tells oxc to only strip type-only imports
-				// (import type {...}, import { type X }) and preserve all value imports.
-				typescript: { onlyRemoveTypeImports: true }
-			});
+			if (typeof transformWithOxc !== 'function') {
+				const { code, map } = await measureAsync('preprocess:script:esbuild', filename, () =>
+					transformWithEsbuild(content, filename, {
+						loader: lang,
+						target: 'esnext',
+						tsconfigRaw: { compilerOptions: { verbatimModuleSyntax: true } }
+					})
+				);
+				mapToRelative(map, filename);
+				return { code, map };
+			}
+			const { code, map } = await measureAsync('preprocess:script:oxc', filename, () =>
+				transformWithOxc(content, filename, {
+					lang,
+					target: 'esnext',
+					// oxc strips value imports it considers unused, but in Svelte files
+					// these imports may be referenced in the template which oxc cannot see.
+					// onlyRemoveTypeImports tells oxc to only strip type-only imports
+					// (import type {...}, import { type X }) and preserve all value imports.
+					typescript: { onlyRemoveTypeImports: true }
+				})
+			);
 
 			mapToRelative(map, filename);
 
@@ -84,7 +100,9 @@ function viteStyle(config = {}) {
 			const transform = await cssTransform;
 			const suffix = `${lang_sep}${ext}`;
 			const moduleId = `${filename}${suffix}`;
-			const { code, map, deps } = await transform(content, moduleId);
+			const { code, map, deps } = await measureAsync('preprocess:style:vite', filename, () =>
+				transform(content, moduleId)
+			);
 			removeLangSuffix(map, suffix);
 			mapToRelative(map, filename);
 			const dependencies = deps ? Array.from(deps).filter((d) => !d.endsWith(suffix)) : undefined;

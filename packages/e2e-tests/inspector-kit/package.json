@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@sveltejs/kit": "catalog:",
-    "@sveltejs/vite-plugin-svelte": "workspace:^",
+    "@mrwaip/vite-plugin-svelte": "workspace:^",
     "svelte": "^5.45.4",
     "vite": "catalog:"
   },

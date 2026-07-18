@@ -1,6 +1,6 @@
 {
-  "name": "@sveltejs/vite-plugin-svelte",
-  "version": "7.2.0",
+  "name": "@mrwaip/vite-plugin-svelte",
+  "version": "0.0.0",
   "license": "MIT",
   "files": [
     "src",
@@ -17,14 +17,17 @@
   "scripts": {
     "check:publint": "publint --strict",
     "check:types": "tsc --noEmit",
-    "generate:types": "dts-buddy -m \"@sveltejs/vite-plugin-svelte:src/public.d.ts\""
+    "generate:types": "dts-buddy -m \"@mrwaip/vite-plugin-svelte:src/public.d.ts\""
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": "^20.19 || ^22.12 || >=24"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sveltejs/vite-plugin-svelte.git",
+    "url": "git+https://github.com/MrWaip/vite-plugin-svelte.git",
     "directory": "packages/vite-plugin-svelte"
   },
   "keywords": [
@@ -34,9 +37,9 @@
     "svelte"
   ],
   "bugs": {
-    "url": "https://github.com/sveltejs/vite-plugin-svelte/issues"
+    "url": "https://github.com/MrWaip/vite-plugin-svelte/issues"
   },
-  "homepage": "https://github.com/sveltejs/vite-plugin-svelte#readme",
+  "homepage": "https://github.com/MrWaip/vite-plugin-svelte#readme",
   "dependencies": {
     "deepmerge": "^4.3.1",
     "magic-string": "^0.30.21",
@@ -45,6 +48,7 @@
   },
   "peerDependencies": {
     "svelte": "^5.46.4",
+    "@mrwaip/svelte-rs": "0.0.0-canary.15.1",
     "vite": "^8.0.0-beta.7 || ^8.0.0"
   },
   "devDependencies": {

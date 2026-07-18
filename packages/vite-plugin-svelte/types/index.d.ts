@@ -1,6 +1,7 @@
-declare module '@sveltejs/vite-plugin-svelte' {
+declare module '@mrwaip/vite-plugin-svelte' {
 	import type { InlineConfig, ResolvedConfig, Plugin, UserConfig } from 'vite';
 	import type { CompileOptions, Warning, PreprocessorGroup } from 'svelte/compiler';
+	import type { CompileOptions as RustCompileOptions } from '@mrwaip/svelte-rs/compiler';
 	export type Options = Omit<SvelteConfig, 'vitePlugin'> & PluginOptionsInline;
 
 	interface PluginOptionsInline extends PluginOptions {
@@ -89,10 +90,32 @@ declare module '@sveltejs/vite-plugin-svelte' {
 		}) => Promise<Partial<CompileOptions> | void> | Partial<CompileOptions> | void;
 
 		/**
+		 * Move typescript and sass preprocessing into the rust compiler and drop the js preprocessor pass
+		 *
+		 * This replaces `preprocess` with an empty array, so custom preprocessors are not run.
+		 *
+		 * @default false
+		 */
+		nativePreprocess?: boolean;
+
+		/**
 		 * These options are considered experimental and breaking changes to them can occur in any release
 		 */
 		experimental?: ExperimentalOptions;
 	}
+
+	/**
+	 * The options the rust compiler adds on top of Svelte's own `CompileOptions`, eg `sourcemapKind`
+	 * and `transformTypescript`
+	 *
+	 * Derived from the rust compiler's own types so it cannot drift from them
+	 */
+	export type SvelteRsCompileOptions = Omit<RustCompileOptions, keyof CompileOptions>;
+
+	/**
+	 * Svelte's compiler options extended with the rust-only options
+	 */
+	export type SvelteCompileOptions = CompileOptions & SvelteRsCompileOptions;
 
 	export interface SvelteConfig {
 		/**
@@ -114,7 +137,7 @@ declare module '@sveltejs/vite-plugin-svelte' {
 		 *
 		 * @see https://svelte.dev/docs/svelte/svelte-compiler#CompileOptions
 		 */
-		compilerOptions?: Omit<CompileOptions, 'filename' | 'format' | 'generate'>;
+		compilerOptions?: Omit<SvelteCompileOptions, 'filename' | 'format' | 'generate'>;
 
 		/**
 		 * Handles warning emitted from the Svelte compiler

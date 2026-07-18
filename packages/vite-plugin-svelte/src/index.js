@@ -13,6 +13,7 @@ import { compileModule } from './plugins/compile-module.js';
 import { svelteInspector } from './plugins/inspector/index.js';
 import { loadCustom } from './plugins/load-custom.js';
 import { hotUpdate } from './plugins/hot-update.js';
+import { phasePlugin } from './utils/profile.js';
 
 /**
  * returns a list of plugins to handle svelte files
@@ -38,7 +39,8 @@ export function svelte(inlineOptions) {
 		compile(api),
 		compileModule(api),
 		hotUpdate(api),
-		svelteInspector(api)
+		svelteInspector(api),
+		phasePlugin()
 	];
 }
 

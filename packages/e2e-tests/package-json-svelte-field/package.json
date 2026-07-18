@@ -12,7 +12,7 @@
     "e2e-test-dep-svelte-nested": "file:../_test_dependencies/svelte-nested"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "workspace:^",
+    "@mrwaip/vite-plugin-svelte": "workspace:^",
     "sass": "^1.94.2",
     "svelte": "^5.45.4",
     "vite": "catalog:"

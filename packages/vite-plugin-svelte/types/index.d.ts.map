@@ -5,6 +5,8 @@
 		"Options",
 		"PluginOptionsInline",
 		"PluginOptions",
+		"SvelteRsCompileOptions",
+		"SvelteCompileOptions",
 		"SvelteConfig",
 		"ExperimentalOptions",
 		"CompileModuleOptions",
@@ -27,6 +29,6 @@
 		null,
 		null
 	],
-	"mappings": ";;;aAGYA,OAAOA;;WAETC,mBAAmBA;;;;;;;;;;;kBAWZC,aAAaA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;kBAgFbC,YAAYA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;WAiDnBC,mBAAmBA;;;;;;;;;;;;;;;;WAgBnBC,oBAAoBA;;;;;;;;;;;;;;;MAezBC,SAASA;;kBAEGC,qBAAqBA;;;;;;;;;;;;;;kBAcrBC,gBAAgBA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;iBCzKjBC,MAAMA;iBCGNC,cAAcA;iBCARC,gBAAgBA",
+	"mappings": ";;;;aAIYA,OAAOA;;WAETC,mBAAmBA;;;;;;;;;;;kBAWZC,aAAaA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;aA+FlBC,sBAAsBA;;;;;aAKtBC,oBAAoBA;;kBAEfC,YAAYA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;WAiDnBC,mBAAmBA;;;;;;;;;;;;;;;;WAgBnBC,oBAAoBA;;;;;;;;;;;;;;;MAezBC,SAASA;;kBAEGC,qBAAqBA;;;;;;;;;;;;;;kBAcrBC,gBAAgBA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;iBC/LjBC,MAAMA;iBCKNC,cAAcA;iBCHRC,gBAAgBA",
 	"ignoreList": []
 }

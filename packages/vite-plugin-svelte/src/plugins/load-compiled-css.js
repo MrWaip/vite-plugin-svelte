@@ -40,7 +40,10 @@ export function loadCompiledCss(api) {
 					return;
 				}
 
-				let cachedCss = this.getModuleInfo(svelteRequest.filename)?.meta.svelte?.css;
+				let cachedCss = api.options.isBuild ? api.cssCache.get(svelteRequest.filename) : undefined;
+				if (!cachedCss) {
+					cachedCss = this.getModuleInfo(svelteRequest.filename)?.meta.svelte?.css;
+				}
 				if (!cachedCss) {
 					// some module IDs have a ?v=... query string suffix in addition to the
 					// filename. We can retrieve this by running resolve again

@@ -6,9 +6,10 @@
 /** @import { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite' */
 
 import { toRollupError } from '../utils/error.js';
+import { preprocess as preprocessWithSvelte } from '../utils/compiler.js';
 import { mapToRelative } from '../utils/sourcemaps.js';
-import * as svelte from 'svelte/compiler';
 import { log } from '../utils/log.js';
+import { measureAsync } from '../utils/profile.js';
 import { arraify } from '../utils/options.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -63,36 +64,47 @@ export function preprocess(api) {
 		},
 		transform: {
 			async handler(code, id) {
-				const ssr = this.environment.config.consumer === 'server';
-				const svelteRequest = api.idParser(id, ssr);
-				if (!svelteRequest) {
-					return;
-				}
-				try {
-					const preprocessed = await preprocessSvelte(svelteRequest, code, options);
-					dependenciesCache?.update(svelteRequest, preprocessed?.dependencies ?? []);
-					if (!preprocessed) {
-						return;
-					}
-					if (options.isBuild && this.environment.config.build.watch && preprocessed.dependencies) {
-						for (const dep of preprocessed.dependencies) {
-							this.addWatchFile(dep);
-						}
-					}
-
-					/** @type {Rollup.SourceDescription}*/
-					const result = { code: preprocessed.code };
-					if (preprocessed.map) {
-						// @ts-expect-error type differs but should work
-						result.map = preprocessed.map;
-					}
-					return result;
-				} catch (e) {
-					throw toRollupError(e, options);
-				}
+				return measureAsync('hook:preprocess-transform', id, () =>
+					innerPreprocessTransform.call(this, code, id)
+				);
 			}
 		}
 	};
+	/**
+	 * @this {any}
+	 * @param {string} code
+	 * @param {string} id
+	 */
+	async function innerPreprocessTransform(code, id) {
+		{
+			const ssr = this.environment.config.consumer === 'server';
+			const svelteRequest = api.idParser(id, ssr);
+			if (!svelteRequest) {
+				return;
+			}
+			try {
+				const preprocessed = await preprocessSvelte(svelteRequest, code, options);
+				dependenciesCache?.update(svelteRequest, preprocessed?.dependencies ?? []);
+				if (!preprocessed) {
+					return;
+				}
+				if (options.isBuild && this.environment.config.build.watch && preprocessed.dependencies) {
+					for (const dep of preprocessed.dependencies) {
+						this.addWatchFile(dep);
+					}
+				}
+
+				/** @type {Rollup.SourceDescription}*/
+				const result = { code: preprocessed.code };
+				if (preprocessed.map) {
+					result.map = preprocessed.map;
+				}
+				return result;
+			} catch (e) {
+				throw toRollupError(e, options);
+			}
+		}
+	}
 	return plugin;
 }
 /**
@@ -116,13 +128,13 @@ function createPreprocessSvelte(options, resolvedConfig) {
 		let preprocessed;
 		if (preprocessors && preprocessors.length > 0) {
 			try {
-				preprocessed = await svelte.preprocess(code, preprocessors, { filename }); // full filename here so postcss works
+				preprocessed = await preprocessWithSvelte(code, preprocessors, { filename }); // full filename here so postcss works
 			} catch (e) {
 				e.message = `Error while preprocessing ${filename}${e.message ? ` - ${e.message}` : ''}`;
 				throw e;
 			}
-			if (typeof preprocessed?.map === 'object') {
-				mapToRelative(preprocessed?.map, filename);
+			if (preprocessed?.map && typeof preprocessed.map === 'object') {
+				mapToRelative(preprocessed.map, filename);
 			}
 			return preprocessed;
 		}

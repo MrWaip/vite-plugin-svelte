@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { build, type Rollup, type InlineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@mrwaip/vite-plugin-svelte';
 import { isBuild } from '~utils';
 
 test.runIf(isBuild)('build-multiple', async () => {

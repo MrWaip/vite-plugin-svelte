@@ -65,6 +65,7 @@ export function configure(api, inlineOptions) {
 				api.filter = buildIdFilter(options);
 				api.idParser = buildIdParser(options);
 				api.compileSvelte = createCompileSvelte();
+				api.cssCache = new Map();
 				log.debug('resolved options', api.options, 'config');
 			}
 		},

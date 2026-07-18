@@ -46,7 +46,8 @@ const allowedPluginOptions = new Set([
 	'prebundleSvelteLibraries',
 	'inspector',
 	'dynamicCompileOptions',
-	'experimental'
+	'experimental',
+	'nativePreprocess'
 ]);
 
 const knownRootOptions = new Set(['extensions', 'compilerOptions', 'preprocess', 'onwarn']);
@@ -221,6 +222,7 @@ export function resolveOptions(preResolveOptions, viteConfig) {
 		mergeConfigs(defaultOptions, preResolveOptions, extraOptions)
 	);
 
+	applyNativePreprocess(merged, viteConfig);
 	removeIgnoredOptions(merged);
 	handleDeprecatedOptions(merged);
 	logRemovedPluginAPI(viteConfig);
@@ -228,6 +230,34 @@ export function resolveOptions(preResolveOptions, viteConfig) {
 	enforceOptionsForProduction(merged);
 
 	return merged;
+}
+
+/**
+ * moves typescript and sass preprocessing into the rust compiler, dropping the js preprocessor pass
+ *
+ * @param {ResolvedOptions} options
+ * @param {ResolvedConfig} viteConfig
+ */
+function applyNativePreprocess(options, viteConfig) {
+	if (!options.nativePreprocess) {
+		return;
+	}
+
+	const scss = viteConfig.css?.preprocessorOptions?.scss ?? {};
+	const root = viteConfig.root ?? process.cwd();
+	const configured = Array.isArray(scss.loadPaths) ? scss.loadPaths : [];
+	const loadPaths = [...configured.map((entry) => path.resolve(root, entry))];
+	loadPaths.push(root, path.resolve(root, 'node_modules'));
+
+	options.compilerOptions = {
+		...options.compilerOptions,
+		transformTypescript: true,
+		transformStyle: true,
+		loadPaths,
+		stylePrepend: typeof scss.additionalData === 'string' ? scss.additionalData : undefined,
+		cacheStyles: options.isBuild === true
+	};
+	options.preprocess = [];
 }
 
 /**

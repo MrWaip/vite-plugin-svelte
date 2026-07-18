@@ -5,7 +5,7 @@
 /** @import { Plugin } from 'vite' */
 
 import { buildModuleIdFilter, buildModuleIdParser } from '../utils/id.js';
-import * as svelteCompiler from 'svelte/compiler';
+import { compileModule as compileWithRust } from '../utils/compiler.js';
 import { log, logCompilerWarnings } from '../utils/log.js';
 import { toRollupError } from '../utils/error.js';
 import { isSvelteWithAsync } from '../utils/svelte-version.js';
@@ -88,7 +88,7 @@ export function compileModule(api) {
 					);
 				}
 				try {
-					const compileResult = svelteCompiler.compileModule(code, finalModuleCompileOptions);
+					const compileResult = compileWithRust(code, finalModuleCompileOptions);
 					logCompilerWarnings(moduleRequest, compileResult.warnings, options);
 					return compileResult.js;
 				} catch (e) {

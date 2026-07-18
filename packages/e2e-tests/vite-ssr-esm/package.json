@@ -10,7 +10,7 @@
     "debug": "node --inspect-brk server"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "workspace:^",
+    "@mrwaip/vite-plugin-svelte": "workspace:^",
     "compression": "^1.8.1",
     "decamelize": "^6.0.1",
     "e2e-test-dep-esm-only": "workspace:^",

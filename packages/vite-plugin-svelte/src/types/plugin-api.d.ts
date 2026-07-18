@@ -7,4 +7,5 @@ export interface PluginAPI {
 	filter: IdFilter;
 	idParser: IdParser;
 	compileSvelte: CompileSvelte;
+	cssCache: Map<string, any>;
 }

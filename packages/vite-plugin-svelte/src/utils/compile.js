@@ -1,8 +1,9 @@
 /** @import { CompileSvelte } from '../types/compile.js' */
 /** @import { StatCollection } from '../types/vite-plugin-svelte-stats.js' */
-/** @import { CompileOptions, CompileResult, Warning } from 'svelte/compiler' */
+/** @import { CompileResult, Warning } from 'svelte/compiler' */
+/** @import { SvelteCompileOptions } from '../public.js' */
 
-import * as svelte from 'svelte/compiler';
+import { compileAsync } from './compiler.js';
 import { log } from './log.js';
 
 import { mapToRelative } from './sourcemaps.js';
@@ -52,7 +53,7 @@ export function createCompileSvelte() {
 			}
 		}
 
-		/** @type {CompileOptions} */
+		/** @type {SvelteCompileOptions} */
 		const compileOptions = {
 			...options.compilerOptions,
 			filename,
@@ -89,12 +90,14 @@ export function createCompileSvelte() {
 			: compileOptions;
 		if (sourcemap) {
 			finalCompileOptions.sourcemap = sourcemap;
+		} else {
+			finalCompileOptions.sourcemapKind = 'none';
 		}
 		const endStat = stats?.start(filename);
 		/** @type {CompileResult} */
 		let compiled;
 		try {
-			compiled = svelte.compile(finalCode, { ...finalCompileOptions, filename });
+			compiled = await compileAsync(finalCode, { ...finalCompileOptions, filename });
 
 			// patch output with partial accept until svelte does it
 			// TODO remove later
