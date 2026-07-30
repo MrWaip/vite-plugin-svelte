@@ -1,15 +1,39 @@
 # @mrwaip/vite-plugin-svelte
 
-[![npm version](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte)
-[![CI](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml)
+[![npm canary](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte/canary?label=canary)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte/v/canary)
+[![npm vite7](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte/vite7?label=vite7)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte/v/vite7)
+[![CI](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg?branch=rust)](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml?query=branch%3Arust)
 [![Chat](https://img.shields.io/discord/457912077277855764?label=chat&logo=discord)](https://svelte.dev/chat)
 
 A fork of the official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev) that routes all Svelte compilation through the experimental Rust compiler [`@mrwaip/svelte-rs`](https://www.npmjs.com/package/@mrwaip/svelte-rs). The plugin API stays compatible with `@sveltejs/vite-plugin-svelte`.
 
 ## Installation
 
+There is no stable release yet — every build is published under a dist-tag, so **always install by tag**. Installing without one resolves to `latest`, which is not maintained and points at an old build.
+
 ```bash
-npm install --save-dev @mrwaip/vite-plugin-svelte
+# Vite 8 (branch `rust`)
+npm install --save-dev @mrwaip/vite-plugin-svelte@canary
+
+# Vite 6 / 7 (branch `rust-vite-7`)
+npm install --save-dev @mrwaip/vite-plugin-svelte@vite7
+```
+
+| Branch                                                                         | npm tag  | Vite                        | Svelte    |
+| ------------------------------------------------------------------------------ | -------- | --------------------------- | --------- |
+| [`rust`](https://github.com/MrWaip/vite-plugin-svelte/tree/rust)               | `canary` | `^8.0.0-beta.7 \|\| ^8.0.0` | `^5.46.4` |
+| [`rust-vite-7`](https://github.com/MrWaip/vite-plugin-svelte/tree/rust-vite-7) | `vite7`  | `^6.3.0 \|\| ^7.0.0`        | `^5.46.4` |
+
+The Rust compiler is an **exactly pinned** peer dependency — this branch requires `@mrwaip/svelte-rs@0.0.0-canary.15.1`. pnpm and npm 7+ install it for you; add it explicitly if your package manager does not auto-install peers:
+
+```bash
+npm install --save-dev @mrwaip/svelte-rs@0.0.0-canary.15.1
+```
+
+When upgrading the plugin, read the pinned version out of its `peerDependencies` rather than assuming — the pin moves with each compiler release:
+
+```bash
+npm view @mrwaip/vite-plugin-svelte@canary peerDependencies
 ```
 
 ## Usage

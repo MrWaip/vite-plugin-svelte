@@ -83,17 +83,17 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         vite: ['current']
         svelte: ['current']
+        # NOTE: node 20 is not tested here even though the package supports ^20.19.
+        # the dev toolchain does not run on it - npm-run-all2@9 (which provides the run-s/run-p
+        # used by `pnpm test`) requires node ^22.22.2 || ^24.15.0 || >=26, and nano-staged
+        # requires ^22 || >=24. with engine-strict the install fails outright.
         include:
-          - node: 20
-            os: ubuntu-latest
-            vite: 'current'
-            svelte: 'current'
           - node: 24
             os: ubuntu-latest
             vite: 'current'
             svelte: 'current'
-          # baseline test lowest svelte, vite and node version
-          - node: 20.19
+          # baseline test lowest svelte and vite version
+          - node: 22
             os: ubuntu-latest
             vite: 'baseline'
             svelte: 'baseline'

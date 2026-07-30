@@ -38,7 +38,15 @@ auditConfig:
     - 'GHSA-v6h2-p8h4-qcjw'
     - 'GHSA-wf6x-7x77-mvgw' # we aren't using mergeDeep from immutable with public inputs
     - 'GHSA-48c2-rrv3-qjmp' # we don't consume public yaml files
-    - 'GHSA-f886-m6hf-6m8v' # belongs to an optional peer dependency of Vite
+    # everything below reaches us only via `vitefu > vite > ...`, i.e. the dependency tree of the
+    # optional peer Vite that the consumer supplies. we neither ship nor pin these packages, so
+    # they cannot be fixed here - they are fixed by the consumer upgrading Vite.
+    - 'GHSA-f886-m6hf-6m8v' # brace-expansion, via vite > stylus > glob > minimatch
+    - 'GHSA-3jxr-9vmj-r5cp' # brace-expansion, via vite > stylus > glob > minimatch
+    - 'GHSA-mh99-v99m-4gvg' # brace-expansion, via vite > stylus > glob > minimatch
+    - 'GHSA-r28c-9q8g-f849' # postcss, via vite > postcss
+    - 'GHSA-v56q-mh7h-f735' # immutable, via vite > sass
+    - 'GHSA-xvcm-6775-5m9r' # immutable, via vite > sass
 
 overrides:
   # $ prefixed package names take their version from root package.json - this is like catalogs but without them
