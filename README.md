@@ -1,15 +1,41 @@
-# @sveltejs/vite-plugin-svelte
+# @mrwaip/vite-plugin-svelte (Vite 6 / 7)
 
-[![npm version](https://img.shields.io/npm/v/@sveltejs/vite-plugin-svelte)](https://www.npmjs.com/package/@sveltejs/vite-plugin-svelte)
-[![CI](https://github.com/sveltejs/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/sveltejs/vite-plugin-svelte/actions/workflows/ci.yml)
+[![npm vite7](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte/vite7?label=vite7)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte/v/vite7)
+[![npm canary](https://img.shields.io/npm/v/@mrwaip/vite-plugin-svelte/canary?label=canary)](https://www.npmjs.com/package/@mrwaip/vite-plugin-svelte/v/canary)
+[![CI](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml/badge.svg?branch=rust-vite-7)](https://github.com/MrWaip/vite-plugin-svelte/actions/workflows/ci.yml?query=branch%3Arust-vite-7)
 [![Chat](https://img.shields.io/discord/457912077277855764?label=chat&logo=discord)](https://svelte.dev/chat)
 
-The official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev).
+A fork of the official [Svelte](https://svelte.dev) plugin for [Vite](https://vitejs.dev) that routes all Svelte compilation through the experimental Rust compiler [`@mrwaip/svelte-rs`](https://www.npmjs.com/package/@mrwaip/svelte-rs). The plugin API stays compatible with `@sveltejs/vite-plugin-svelte`.
+
+**This branch is the Vite 6 / 7 line.** For Vite 8 use the [`rust`](https://github.com/MrWaip/vite-plugin-svelte/tree/rust) branch and the `canary` tag.
 
 ## Installation
 
+There is no stable release yet — every build is published under a dist-tag, so **always install by tag**. Installing without one resolves to `latest`, which is not maintained and points at an old build.
+
 ```bash
-npm install --save-dev @sveltejs/vite-plugin-svelte
+# Vite 6 / 7 (this branch)
+npm install --save-dev @mrwaip/vite-plugin-svelte@vite7
+
+# Vite 8 (branch `rust`)
+npm install --save-dev @mrwaip/vite-plugin-svelte@canary
+```
+
+| Branch                                                                         | npm tag  | Vite                        | Svelte    |
+| ------------------------------------------------------------------------------ | -------- | --------------------------- | --------- |
+| [`rust-vite-7`](https://github.com/MrWaip/vite-plugin-svelte/tree/rust-vite-7) | `vite7`  | `^6.3.0 \|\| ^7.0.0`        | `^5.46.4` |
+| [`rust`](https://github.com/MrWaip/vite-plugin-svelte/tree/rust)               | `canary` | `^8.0.0-beta.7 \|\| ^8.0.0` | `^5.46.4` |
+
+The Rust compiler is an **exactly pinned** peer dependency — this branch requires `@mrwaip/svelte-rs@0.0.0-canary.15.1`. pnpm and npm 7+ install it for you; add it explicitly if your package manager does not auto-install peers:
+
+```bash
+npm install --save-dev @mrwaip/svelte-rs@0.0.0-canary.15.1
+```
+
+When upgrading the plugin, read the pinned version out of its `peerDependencies` rather than assuming — the pin moves with each compiler release:
+
+```bash
+npm view @mrwaip/vite-plugin-svelte@vite7 peerDependencies
 ```
 
 ## Usage
@@ -17,7 +43,7 @@ npm install --save-dev @sveltejs/vite-plugin-svelte
 ```js
 // vite.config.js
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@mrwaip/vite-plugin-svelte';
 
 export default defineConfig({
   plugins: [
@@ -38,7 +64,7 @@ export default defineConfig({
 
 | Package                                                                         | Changelog                                                       |
 | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [@sveltejs/vite-plugin-svelte](packages/vite-plugin-svelte)                     | [Changelog](packages/vite-plugin-svelte/CHANGELOG.md)           |
+| [@mrwaip/vite-plugin-svelte](packages/vite-plugin-svelte)                       | [Changelog](packages/vite-plugin-svelte/CHANGELOG.md)           |
 | [@sveltejs/vite-plugin-svelte-inspector](packages/vite-plugin-svelte-inspector) | [Changelog](packages/vite-plugin-svelte-inspector/CHANGELOG.md) |
 
 ## Got a question? / Need help?

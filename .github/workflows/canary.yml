@@ -2,6 +2,16 @@ name: Canary
 
 on:
   workflow_dispatch:
+    inputs:
+      dist-tag:
+        description: 'npm dist-tag to publish under'
+        required: false
+        default: 'vite7'
+      set-latest:
+        description: 'also move the `latest` dist-tag to this build'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -15,25 +25,35 @@ jobs:
   publish-canary:
     if: github.repository_owner == 'MrWaip' || github.repository_owner == 'mrwaip'
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: 'false'
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
-          cache: pnpm
+          package-manager-cache: false # pnpm is not installed yet
+      - name: install pnpm
+        shell: bash
+        run: |
+          PNPM_VER=$(jq -r '.packageManager | if .[0:5] == "pnpm@" then .[5:] else "packageManager in package.json does not start with pnpm@\n" | halt_error(1)  end' package.json)
+          echo installing pnpm version $PNPM_VER
+          npm i -g pnpm@$PNPM_VER
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          package-manager-cache: true # caches pnpm via packageManager field in package.json
+          cache: 'pnpm'
           registry-url: https://registry.npmjs.org/
 
-      - name: Install
+      - name: install
         run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
 
-      - name: Set canary version
+      - name: set canary version
+        id: version
         run: |
           node --input-type=module -e '
             import fs from "node:fs";
@@ -41,19 +61,49 @@ jobs:
             const pkg = JSON.parse(fs.readFileSync(path, "utf8"));
             pkg.version = `${pkg.version}-canary.${process.env.GITHUB_RUN_ID}.${process.env.GITHUB_RUN_ATTEMPT}`;
             fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${pkg.version}\n`);
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `name=${pkg.name}\n`);
+            console.log(`version set to ${pkg.version}`);
           '
 
-      - name: Generate types
+      - name: generate types
         run: pnpm --filter ./packages/vite-plugin-svelte generate:types
 
-      - name: Check types
+      - name: generated types are up to date
+        run: '[ "`git status --porcelain=v1 -- packages/vite-plugin-svelte/types`" == "" ]'
+
+      - name: check types
         run: pnpm --filter ./packages/vite-plugin-svelte check:types
 
-      - name: Publint
+      - name: publint
         run: pnpm --filter ./packages/vite-plugin-svelte check:publint
 
-      - name: Publish canary
-        run: pnpm --filter ./packages/vite-plugin-svelte publish --tag vite7 --access public --no-git-checks
+      - name: test
+        run: pnpm test:unit
+
+      - name: publish canary
+        run: pnpm --filter ./packages/vite-plugin-svelte publish --tag "$DIST_TAG" --access public --no-git-checks
         env:
+          DIST_TAG: ${{ inputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+
+      - name: move latest dist-tag
+        if: inputs.set-latest
+        run: npm dist-tag add "$PKG@$VERSION" latest
+        env:
+          PKG: ${{ steps.version.outputs.name }}
+          VERSION: ${{ steps.version.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: summary
+        run: |
+          {
+            echo "### Published"
+            echo
+            echo '```'
+            echo "${{ steps.version.outputs.name }}@${{ steps.version.outputs.version }}"
+            echo "dist-tag: ${{ inputs.dist-tag }}"
+            echo "latest moved: ${{ inputs.set-latest }}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
