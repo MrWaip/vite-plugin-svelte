@@ -144,8 +144,21 @@ function existsInRoot(filename, root) {
 	if (filename.startsWith(VITE_FS_PREFIX)) {
 		return false; // vite already tagged it as out of root
 	}
-	return fs.existsSync(root + filename);
+	if (filename.startsWith(`${root}/`)) {
+		return false; // already an absolute path inside root, `root + filename` cannot exist
+	}
+	const key = `${root}\0${filename}`;
+	const cached = existsInRootCache.get(key);
+	if (cached !== undefined) {
+		return cached;
+	}
+	const exists = fs.existsSync(root + filename);
+	existsInRootCache.set(key, exists);
+	return exists;
 }
+
+/** @type {Map<string, boolean>} */
+const existsInRootCache = new Map();
 
 /**
  * @param {string} normalizedFilename
@@ -198,9 +211,24 @@ export function buildIdFilter(options) {
  */
 export function buildIdParser(options) {
 	const normalizedRoot = normalizePath(options.root);
+	if (!options.isBuild) {
+		return (id, ssr, timestamp = Date.now()) => {
+			const { filename, rawQuery } = splitId(id);
+			return parseToSvelteRequest(id, filename, rawQuery, normalizedRoot, timestamp, ssr);
+		};
+	}
+
+	/** @type {Map<string, import('../types/id.d.ts').SvelteRequest | undefined>} */
+	const parsed = new Map();
 	return (id, ssr, timestamp = Date.now()) => {
+		const key = `${ssr ? 's' : 'c'}\0${id}`;
+		if (parsed.has(key)) {
+			return parsed.get(key);
+		}
 		const { filename, rawQuery } = splitId(id);
-		return parseToSvelteRequest(id, filename, rawQuery, normalizedRoot, timestamp, ssr);
+		const request = parseToSvelteRequest(id, filename, rawQuery, normalizedRoot, timestamp, ssr);
+		parsed.set(key, request);
+		return request;
 	};
 }
 

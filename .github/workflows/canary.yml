@@ -1,0 +1,59 @@
+name: Canary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: canary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-canary:
+    if: github.repository_owner == 'MrWaip' || github.repository_owner == 'mrwaip'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install
+        run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
+
+      - name: Set canary version
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const path = "packages/vite-plugin-svelte/package.json";
+            const pkg = JSON.parse(fs.readFileSync(path, "utf8"));
+            pkg.version = `${pkg.version}-canary.${process.env.GITHUB_RUN_ID}.${process.env.GITHUB_RUN_ATTEMPT}`;
+            fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
+          '
+
+      - name: Generate types
+        run: pnpm --filter ./packages/vite-plugin-svelte generate:types
+
+      - name: Check types
+        run: pnpm --filter ./packages/vite-plugin-svelte check:types
+
+      - name: Publint
+        run: pnpm --filter ./packages/vite-plugin-svelte check:publint
+
+      - name: Publish canary
+        run: pnpm --filter ./packages/vite-plugin-svelte publish --tag vite7 --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

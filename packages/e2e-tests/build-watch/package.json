@@ -12,10 +12,10 @@
     "e2e-test-dep-svelte-simple": "file:../_test_dependencies/svelte-simple"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "workspace:^",
+    "@mrwaip/vite-plugin-svelte": "workspace:^",
     "e2e-test-dep-vite-plugins": "file:../_test_dependencies/vite-plugins",
     "node-fetch": "^3.3.2",
-    "svelte": "^5.45.4",
+    "svelte": "^5.56.4",
     "vite": "^7.2.6"
   },
   "type": "module"

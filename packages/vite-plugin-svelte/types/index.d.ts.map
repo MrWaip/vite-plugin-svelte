@@ -5,6 +5,8 @@
 		"Options",
 		"PluginOptionsInline",
 		"PluginOptions",
+		"SvelteRsCompileOptions",
+		"SvelteCompileOptions",
 		"SvelteConfig",
 		"ExperimentalOptions",
 		"CompileModuleOptions",
@@ -26,6 +28,6 @@
 		null,
 		null
 	],
-	"mappings": ";;;;aAIYA,OAAOA;;WAETC,mBAAmBA;;;;;;;;;;;kBAWZC,aAAaA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;kBAgGbC,YAAYA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;WAiDnBC,mBAAmBA;;;;;;;;;;;;;;;;;;;;;;;WAuBnBC,oBAAoBA;;;;;;;;;;;;;;;MAezBC,SAASA;;kBAEGC,qBAAqBA;;;;;;;;;;;;;;;;;;iBCvLtBC,MAAMA;iBCMNC,cAAcA;iBCFRC,gBAAgBA",
+	"mappings": ";;;;;aAKYA,OAAOA;;WAETC,mBAAmBA;;;;;;;;;;;kBAWZC,aAAaA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;aA+GlBC,sBAAsBA;;;;;aAKtBC,oBAAoBA;;kBAEfC,YAAYA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;WAiDnBC,mBAAmBA;;;;;;;;;;;;;;;;;;;;;;;WAuBnBC,oBAAoBA;;;;;;;;;;;;;;;MAezBC,SAASA;;kBAEGC,qBAAqBA;;;;;;;;;;;;;;;;;;iBC7MtBC,MAAMA;iBCMNC,cAAcA;iBCHRC,gBAAgBA",
 	"ignoreList": []
 }

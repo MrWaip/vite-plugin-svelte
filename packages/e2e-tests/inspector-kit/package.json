@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@mrwaip/vite-plugin-svelte": "workspace:^",
     "@sveltejs/kit": "^2.49.1",
-    "@sveltejs/vite-plugin-svelte": "workspace:^",
-    "svelte": "^5.45.4",
+    "svelte": "^5.56.4",
     "vite": "^7.2.6"
   },
   "type": "module"

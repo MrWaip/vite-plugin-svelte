@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - rust
   pull_request:
     branches:
-      - main
+      - rust
 env:
   # we call `pnpm playwright install` instead
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'

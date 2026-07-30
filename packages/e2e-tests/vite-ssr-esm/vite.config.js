@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@mrwaip/vite-plugin-svelte';
 import process from 'node:process';
 const isWatch = !!process.env.TEST_BUILD_WATCH;
 

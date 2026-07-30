@@ -13,9 +13,20 @@ export function loadCustom(api) {
 	const plugin = {
 		name: 'vite-plugin-svelte:load-custom',
 		enforce: 'pre', // must come before vites own asset handling or custom extensions like .svg won't work
-		configResolved() {
+		configResolved(config) {
+			const extensions = api.options.extensions ?? ['.svelte'];
+			const handlesAssets = extensions.some((extension) =>
+				config.assetsInclude(`dummy${extension}`)
+			);
 			//@ts-expect-error load defined below but filter not in type
-			plugin.load.filter = api.filter;
+			plugin.load.filter = handlesAssets ? api.filter : { id: /$./ };
+			if (!handlesAssets) {
+				log.debug(
+					`disabling ${plugin.name} because no svelte extension is treated as an asset`,
+					undefined,
+					'load'
+				);
+			}
 		},
 
 		load: {

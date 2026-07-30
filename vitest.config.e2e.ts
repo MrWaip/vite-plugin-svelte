@@ -5,7 +5,7 @@ import * as process from 'node:process';
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 
-const timeout = process.env.CI ? 50000 : 30000;
+const timeout = 4000;
 const __dir = path.dirname(fileURLToPath(import.meta.url));
 const utilsPath = path.resolve(__dir, 'packages/e2e-tests/testUtils');
 

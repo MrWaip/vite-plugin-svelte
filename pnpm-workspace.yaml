@@ -14,6 +14,8 @@ minimumReleaseAgeExclude:
   - '@vitest/*'
   - 'svelte'
   - '@sveltejs/*'
+  - prettier-plugin-svelte
+  - svelte-check
   - 'rolldown-vite'
   - 'rolldown'
   - '@rolldown/*'
@@ -24,6 +26,8 @@ minimumReleaseAgeExclude:
   - 'is-reference'
   - 'locate-character'
   - 'zimmerframe'
+  - 'vitefu'
+  - '@mrwaip/*'
 
 onlyBuiltDependencies:
   - esbuild
@@ -45,8 +49,8 @@ updateConfig:
 overrides:
   # $ prefixed package names take their version from root package.json - this is like catalogs but without them
   '@sveltejs/kit': '$@sveltejs/kit'
-  '@sveltejs/kit>@sveltejs/vite-plugin-svelte': 'workspace:^'
-  '@sveltejs/vite-plugin-svelte': 'workspace:^'
+  '@sveltejs/kit>@mrwaip/vite-plugin-svelte': 'workspace:^'
+  '@mrwaip/vite-plugin-svelte': 'workspace:^'
   '@sveltejs/vite-plugin-svelte-inspector': 'workspace:^'
   'svelte': '$svelte'
   'vite': '$vite'

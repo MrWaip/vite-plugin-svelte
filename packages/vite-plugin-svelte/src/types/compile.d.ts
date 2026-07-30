@@ -1,4 +1,5 @@
-import type { Processed, CompileResult } from 'svelte/compiler';
+import type { CompileResult } from 'svelte/compiler';
+import type { PreprocessResult } from '@mrwaip/svelte-rs/compiler';
 import type { SvelteRequest } from './id.d.ts';
 import type { ResolvedOptions } from './options.d.ts';
 import type { CustomPluginOptionsVite, Rollup } from 'vite';
@@ -14,7 +15,7 @@ export type PreprocessSvelte = (
 	svelteRequest: SvelteRequest,
 	code: string,
 	options: Partial<ResolvedOptions>
-) => Promise<Processed | undefined>;
+) => Promise<PreprocessResult | undefined>;
 
 export interface Code {
 	code: string;

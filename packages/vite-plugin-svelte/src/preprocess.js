@@ -1,6 +1,7 @@
 import process from 'node:process';
 import * as vite from 'vite';
 import { mapToRelative, removeLangSuffix } from './utils/sourcemaps.js';
+import { measureAsync } from './utils/profile.js';
 const {
 	isCSSRequest,
 	preprocessCSS,
@@ -44,17 +45,19 @@ function viteScript() {
 		async script({ attributes, content, filename = '' }) {
 			const lang = /** @type {string} */ (attributes.lang);
 			if (!supportedScriptLangs.includes(lang)) return;
-			const { code, map } = await transformWithEsbuild(content, filename, {
-				loader: /** @type {import('vite').ESBuildOptions['loader']} */ (lang),
-				target: 'esnext',
-				tsconfigRaw: {
-					compilerOptions: {
-						// svelte typescript needs this flag to work with type imports
-						importsNotUsedAsValues: 'preserve',
-						preserveValueImports: true
+			const { code, map } = await measureAsync('preprocess:script:esbuild', filename, () =>
+				transformWithEsbuild(content, filename, {
+					loader: /** @type {import('vite').ESBuildOptions['loader']} */ (lang),
+					target: 'esnext',
+					tsconfigRaw: {
+						compilerOptions: {
+							// svelte typescript needs this flag to work with type imports
+							importsNotUsedAsValues: 'preserve',
+							preserveValueImports: true
+						}
 					}
-				}
-			});
+				})
+			);
 
 			mapToRelative(map, filename);
 
@@ -76,18 +79,17 @@ function viteScriptOxc() {
 				return;
 			}
 			const lang = /** @type {'ts'} */ (attributes.lang);
-			const { code, map } = await transformWithOxc(content, filename, {
-				lang,
-				target: 'esnext'
-				// TODO, how to pass tsconfig compilerOptions (or not needed as config is loaded for file
-				/*tsconfigRaw: {
-					compilerOptions: {
-						// svelte typescript needs this flag to work with type imports
-						importsNotUsedAsValues: 'preserve',
-						preserveValueImports: true
-					}
-				}*/
-			});
+			const { code, map } = await measureAsync('preprocess:script:oxc', filename, () =>
+				transformWithOxc(content, filename, {
+					lang,
+					target: 'esnext',
+					// oxc strips value imports it considers unused, but in Svelte files
+					// these imports may be referenced in the template which oxc cannot see.
+					// onlyRemoveTypeImports tells oxc to only strip type-only imports
+					// (import type {...}, import { type X }) and preserve all value imports.
+					typescript: { onlyRemoveTypeImports: true }
+				})
+			);
 
 			mapToRelative(map, filename);
 
@@ -116,7 +118,9 @@ function viteStyle(config = {}) {
 		const transform = await cssTransform;
 		const suffix = `${lang_sep}${ext}`;
 		const moduleId = `${filename}${suffix}`;
-		const { code, map, deps } = await transform(content, moduleId);
+		const { code, map, deps } = await measureAsync('preprocess:style:vite', filename, () =>
+			transform(content, moduleId)
+		);
 		removeLangSuffix(map, suffix);
 		mapToRelative(map, filename);
 		const dependencies = deps ? Array.from(deps).filter((d) => !d.endsWith(suffix)) : undefined;
